@@ -1,0 +1,22 @@
+[
+    {
+        "filePath": "./Firearms/g17_dissa.glb",
+        "name": "Glock 17 Disassembled",
+        "category": "firearm",
+        "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        },
+        "scale": {
+            "x": 30,
+            "y": 30,
+            "z": 30
+        },
+        "rotation": {
+            "x":0,
+            "y":90,
+            "z":0
+        }
+    }
+]
