@@ -1,0 +1,82 @@
+[
+    {
+      "filePath": "./Firearms/glock19.glb",
+      "name": "Glock 19",
+      "category": "Firearm",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 40,
+        "y": 40,
+        "z": 40
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "filePath": "./Accessory/red_dot/crimson_trace_cts-1550_red_dot_sight.glb",
+      "name": "Crimson Trace CTS-1550",
+      "category": "Scope",
+      "position": {
+        "x": 0,
+        "y": 2.45,
+        "z": -2.6
+      },
+      "scale": {
+        "x": 34,
+        "y": 34,
+        "z": 34
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "filePath": "./Accessory/red_dot/venom_red_dot_sight-3_moa.glb",
+      "name": "Venom Red Dot 3-MOA",
+      "category": "Scope",
+      "position": {
+        "x": 0,
+        "y": 2.9,
+        "z": -2.3
+      },
+      "scale": {
+        "x": 0.8,
+        "y": 0.8,
+        "z": 0.8
+      },
+      "rotation": {
+        "x": 0,
+        "y": -90,
+        "z": 0
+      }
+    },
+    {
+      "filePath": "./Accessory/surefire/surefire_x400_ultra_flashlight.glb",
+      "name": "Surefire X400 Ultra Flashlight",
+      "category": "Flashlight",
+      "position": {
+        "x": -14.34,
+        "y": -0.34,
+        "z": 9.72
+      },
+      "scale": {
+        "x": 38,
+        "y": 38,
+        "z": 38
+      },
+      "rotation": {
+        "x": 0,
+        "y": -90,
+        "z": 0
+      }
+    }
+  ]
