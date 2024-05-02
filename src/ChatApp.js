@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ChatApp.css'; // Import the CSS file
-import AWS from 'aws-sdk';
+
 
 function ChatApp({ onClose }) {
   const [messages, setMessages] = useState([]);
@@ -11,34 +11,13 @@ function ChatApp({ onClose }) {
 
 
   useEffect(() => {
-    /*
-    const fetchApiKey = async () => {
-      const secretName = "OpenAI_API";
-      const region = 'us-west-1';
-      AWS.config.update({ region: 'us-west-1' });
-      // Set up AWS Secrets Manager client
-      const secretsManager = new AWS.SecretsManager({ region });
+    const fetchAPIKey = async () => {
+      const response = await axios.get('AWS_API_GATEWAY');
+      const responseBody = JSON.parse(response.data.body); // Parsing the JSON string in the body
+      setApiKey(responseBody.API_KEY);
+    }
 
-      // Retrieve secret value
-      secretsManager.getSecretValue({ SecretId: secretName }, (err, data) => {
-        if (err) {
-          console.error('Error retrieving secret:', err);
-        } else {
-          if ('SecretString' in data) {
-            const secretString = data.SecretString;
-            setApiKey(secretString);
-            console.log('Secret:', secretString);
-            // Use the secret value as needed
-          } else {
-            console.error('Secret not found:', secretName);
-          }
-        }
-      });
-    };
-
-    fetchApiKey();
-    */
-   setApiKey("YOUR_API_KEY");
+    fetchAPIKey();
   }, []); // Empty dependency array ensures this runs only once on mount
 
   const sendMessage = async () => {
@@ -59,7 +38,7 @@ function ChatApp({ onClose }) {
         {
           model: 'gpt-3.5-turbo', // Specify the ChatGPT model
           messages: [
-            { role: 'system', content: 'You are a firearm specialist. You are only responsible for answering question regarding firearms. Questions that are not related to firearm should be response: Sorry, I could only answer questions about firearms. Please ask question like: Tell me the history of Glock; or: What is the megazine capacity of a Glock 17?' },
+            { role: 'system', content: 'You are a firearm specialist. You can only answer questions regarding firearm or accessories related to firearm (such as scopes, megazine basepads, or handgard). Please note that as long as there are words about firearms or related accessories in the question, it should be considered valid. For example: "History of Kriss Vector?" is a valid question, and "Where does Boeing HQ locate at?" is invaild. For questions that are not related to firearm should be responsed: "Sorry, I could only answer questions about firearms. Please ask question like: Tell me the history of Colt; or: What is the megazine capacity of a Glock 17?"' },
             { role: 'user', content: inputText }
           ]
         },

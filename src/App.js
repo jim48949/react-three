@@ -3,6 +3,7 @@ import './App.css'; // Import the CSS file
 import ThreeModelViewer from './ThreeModelViewer';
 import Loading from './Loading';
 import ChatApp from './ChatApp';
+import AwsApi from "./AwsApiRest";
 
 function App() {
   const [appState, setAppState] = useState('initial');
@@ -41,12 +42,12 @@ function App() {
       setAppState('loading'); // Update app state to 'loading'
       const interval = setInterval(() => {
         updateLoadingProgress();
-      }, 300);
+      }, 120);
 
       setTimeout(() => {
         clearInterval(interval);
         setAppState('authenticated'); // Update app state to 'authenticated' after loading
-      }, 3000); // Simulate a 3-second loading process
+      }, 1200); // Simulate a 3-second loading process
     } else {
       setError('Incorrect password. Please try again.');
     }

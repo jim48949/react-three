@@ -12,6 +12,7 @@ const ThreeModelViewer = () => {
   const [autoRotateDelay, setAutoRotateDelay] = useState(2000); // Default auto-rotate delay: 3000ms (3 seconds)
   const [loadedModels, setLoadedModels] = useState([null]);
   const [selectedModelFromDropdown, setSelectedModelFromDropdown] = useState(null);
+  const [isFirstModelLoaded, setIsFirstModelLoaded] = useState(false);
 
 
   const canvasRef = useRef(null);
@@ -80,31 +81,31 @@ const ThreeModelViewer = () => {
         try {
           const response = await fetch(`./${selectedJsonFile}`);
           const data = await response.json();
-  
+
           // Unload all displayed models before loading new ones
           modelGroup.current.children = [];
           scene.current.remove(modelGroup.current);
-  
+
           // Reset camera position and rotation
           camera.current.position.set(0, 0, 10);
           camera.current.lookAt(0, 0, 0);
           // Reset controls
           controls.current.reset();
-  
+
           setSelectedModels(data);
-  
+
           // Load only the first model initially
           const firstModel = data[0];
           if (firstModel) {
             loadModel(firstModel.filePath, firstModel.position, firstModel.scale, firstModel.rotation);
             setLoadedModels([firstModel.filePath]);
           }
-  
+
         } catch (error) {
           console.error('Error fetching models from JSON:', error);
         }
       };
-  
+
       fetchModelsFromJson();
     }
   }, [selectedJsonFile]);
@@ -121,7 +122,7 @@ const ThreeModelViewer = () => {
             setLoadedModels(prevLoaded => prevLoaded.filter(path => path !== selectedModel));
           }
         }
-  
+
         // Load the selected model
         loadModel(selectedModelData.filePath, selectedModelData.position, selectedModelData.scale, selectedModelData.rotation);
       }
@@ -131,7 +132,7 @@ const ThreeModelViewer = () => {
   useEffect(() => {
     let autoRotateTimer; // Timer for auto-rotation
     let interactionTimer; // Timer for user interaction
-  
+
     const startAutoRotate = () => {
       autoRotateTimer = setTimeout(() => {
         if (controls.current) {
@@ -140,7 +141,7 @@ const ThreeModelViewer = () => {
         }
       }, autoRotateDelay);
     };
-  
+
     const stopAutoRotate = () => {
       if (controls.current) {
         controls.current.autoRotate = false;
@@ -149,14 +150,14 @@ const ThreeModelViewer = () => {
 
     // Start auto-rotate after mounted
     startAutoRotate();
-  
+
     const handleUserInteraction = () => {
       clearTimeout(interactionTimer); // Clear previous interaction timer
       clearTimeout(autoRotateTimer); // Clear auto-rotate timer
       stopAutoRotate(); // Stop auto-rotation
       interactionTimer = setTimeout(startAutoRotate, autoRotateDelay); // Restart auto-rotation after delay
     };
-  
+
     // Add event listener for user click on the canvas
     const canvasElement = canvasRef.current;
     if (canvasElement) {
@@ -170,7 +171,7 @@ const ThreeModelViewer = () => {
       }
       clearTimeout(autoRotateTimer); // Clear auto-rotate timer
       clearTimeout(interactionTimer); // Clear interaction timer
-  };
+    };
   }, [autoRotateDelay]);
 
 
@@ -189,6 +190,12 @@ const ThreeModelViewer = () => {
           model.userData.index = selectedModels.findIndex(modelData => modelData.filePath === filePath); // Store index for later removal
           modelGroup.current.add(model);
           scene.current.add(modelGroup.current);
+
+          // Calculate the bounding box and set the controls target
+          if (!isFirstModelLoaded) {
+            updateCameraTarget(model);
+            setIsFirstModelLoaded(true);
+          }
         },
         undefined,
         (error) => {
@@ -198,6 +205,17 @@ const ThreeModelViewer = () => {
     } catch (error) {
       console.error('Error loading model:', error);
     }
+  };
+
+  const updateCameraTarget = (model) => {
+    const box = new THREE.Box3().setFromObject(model);
+    const center = box.getCenter(new THREE.Vector3());
+
+    // Set the OrbitControls target to the model center
+    controls.current.target.set(center.x, center.y, center.z);
+
+    // Update the camera and controls to look at this new target
+    controls.current.update();
   };
 
   const envLights = () => {
@@ -227,6 +245,7 @@ const ThreeModelViewer = () => {
     const file = e.target.value;
     setSelectedJsonFile(file);
     setSelectedModel(null); // Reset selected model when JSON file changes
+    setIsFirstModelLoaded(false); // Reset the first model loaded flag
   };
 
 
@@ -246,7 +265,7 @@ const ThreeModelViewer = () => {
             modelGroup.current.remove(modelToRemove);
           }
         });
-      } 
+      }
       loadModel(
         selectedModelData.filePath,
         selectedModelData.position,
@@ -257,10 +276,10 @@ const ThreeModelViewer = () => {
     } else {
       // If nothing selected, unload all models in the same category
       const modelsToUnload = loadedModels
-      .filter((modelPath) => {
-        const modelData = selectedModels.find((model) => model.filePath === modelPath);
-        return modelData.category !== selectedCategory; // Filter models not in the first category
-      });
+        .filter((modelPath) => {
+          const modelData = selectedModels.find((model) => model.filePath === modelPath);
+          return modelData.category !== selectedCategory; // Filter models not in the first category
+        });
 
       modelsToUnload.forEach((modelPath) => {
         const modelToRemove = modelGroup.current.children.find(

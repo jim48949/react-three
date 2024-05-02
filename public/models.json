@@ -1,8 +1,8 @@
 [
-  "./Model_Json/Glock 18.json",
   "./Model_Json/Glock 17.json",
   "./Model_Json/Glock 17 Disassembly.json",
   "./Model_Json/Glock 19.json",
+  "./Model_Json/Glock 34 Custom.json",
   "./Model_Json/Kriss Vector.json",
   "./Model_Json/Surefire X300u-b.json"
 ]
